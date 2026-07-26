@@ -33,7 +33,7 @@ build_profile() {
 
     for capability in "${CAPABILITIES[@]}"; do
 
-        execute_capability "$capability" || exit 1
+        execute_capability "$capability" || return 1
         
     done
 
