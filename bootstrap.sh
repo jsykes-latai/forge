@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
+# That's it.
+# No installation logic.
+# No package management.
+# No copying files.
+# Bootstrap simply starts the engine.
 
-set -e
+set -euo pipefail
 
-echo "⚒️ Forge bootstrap starting..."
+source engine/logger.sh
+source engine/profile.sh
+source engine/module.sh
+source engine/runner.sh
 
-./scripts/check-system.sh
-./scripts/install-packages.sh
-./scripts/install-tools.sh
-./scripts/link-configs.sh
-
-echo "⚒️ Forge bootstrap complete."
+main "$@"
