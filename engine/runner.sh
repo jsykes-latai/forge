@@ -22,10 +22,28 @@ build_profile() {
     echo
 
     log_success "Profile loaded"
-    log_info "Capabilities detected:"
+    log_info "Building capabilities:"
 
     for capability in "${CAPABILITIES[@]}"; do
-        echo "      - $capability"
+
+        echo
+        echo "  [$capability]"
+
+        CAPABILITY_DIR="$(dirname "${BASH_SOURCE[0]}")/../capabilities/$capability"
+
+        source "$CAPABILITY_DIR/capability.sh"
+        source "$CAPABILITY_DIR/install.sh"
+        source "$CAPABILITY_DIR/verify.sh"
+
+        install
+
+        if verify; then
+            log_success "$capability ready"
+        else
+            log_error "$capability failed verification"
+            exit 1
+        fi
+
     done
 
     echo
