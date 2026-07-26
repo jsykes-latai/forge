@@ -17,6 +17,10 @@ forge_step() {
     echo "      $1"
 }
 
+forge_info() {
+    echo "  [INFO] $1"
+}
+
 forge_success() {
     echo "  ✓ $1"
 }
@@ -62,3 +66,4 @@ forge_complete() {
     echo "Welcome Home."
     echo
 }
+
