@@ -35,6 +35,7 @@ Forge exists to reduce the distance between an idea and working software.
 ```bash
 ./bootstrap.sh
 
+
 ## Guiding Principles
 
 ### What should Forge optimize for?
