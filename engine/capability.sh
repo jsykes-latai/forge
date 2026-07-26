@@ -1,3 +1,24 @@
+#!/usr/bin/env bash
+
+###########################
+### Capability contract ###
+###########################
+
+
+##########################################################################
+### Every Forge capability must provide these functions and variables. ###
+##########################################################################
+
+FORGE_REQUIRED_CAPABILITY_FUNCTIONS=(
+    capability_install
+    capability_verify
+)
+
+FORGE_REQUIRED_CAPABILITY_VARIABLES=(
+    CAPABILITY_NAME
+)
+
+
 ####################################################################
 ### Find the capability and determine where the capabilty lives. ###
 ####################################################################
@@ -13,9 +34,9 @@ forge_find_capability() {
 }
 
 
-#############################################################################
-### Validate the capabilty and verify that it satisfies Forge's contract. ###
-#############################################################################
+######################################
+### Validate the capabilty package ###
+######################################
 
 forge_validate_capability() {
 
@@ -42,20 +63,25 @@ forge_validate_capability() {
 
 forge_validate_capability_interface() {
 
-    declare -F capability_install >/dev/null || {
-        forge_error "Capability does not define capability_install()"
-        return 1
-    }
+    for function in "${FORGE_REQUIRED_CAPABILITY_FUNCTIONS[@]}"; do
 
-    declare -F capability_verify >/dev/null || {
-        forge_error "Capability does not define capability_verify()"
-        return 1
-    }
+        if ! declare -F "$function" >/dev/null; then
+            forge_error "Missing required function: $function"
+            return 1
+        fi
 
-    [[ -n "${CAPABILITY_NAME:-}" ]] || {
-        forge_error "Capability does not define CAPABILITY_NAME"
-        return 1
-    }
+    done
+
+
+    for variable in "${FORGE_REQUIRED_CAPABILITY_VARIABLES[@]}"; do
+
+        if [[ -z "${!variable:-}" ]]; then
+            forge_error "Missing required variable: $variable"
+            return 1
+        fi
+
+    done
+
 }
 
 
@@ -76,9 +102,20 @@ forge_load_capability() {
 
     forge_validate_capability "$capability_dir" || return 1
 
-    source "$capability_dir/capability.sh"
-    source "$capability_dir/install.sh"
-    source "$capability_dir/verify.sh"
+    source "$capability_dir/capability.sh" || {
+        forge_error "Failed to load capability.sh"
+        return 1
+    }
+
+    source "$capability_dir/install.sh" || {
+        forge_error "Failed to load install.sh"
+        return 1
+    }
+
+    source "$capability_dir/verify.sh" || {
+        forge_error "Failed to load verify.sh"
+        return 1
+    }
 
     forge_validate_capability_interface || return 1
 }
