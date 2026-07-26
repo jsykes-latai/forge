@@ -2,15 +2,11 @@
 
 set -e
 
-echo "⚒️  Forge bootstrap starting..."
+echo "⚒️ Forge bootstrap starting..."
 
-echo "Installing packages..."
-sudo pacman -S --needed - < packages.txt
+./scripts/check-system.sh
+./scripts/install-packages.sh
+./scripts/install-tools.sh
+./scripts/link-configs.sh
 
-echo "Installing configs..."
-
-cp config/zsh/.zshrc ~/.zshrc
-cp config/starship/starship.toml ~/.config/starship.toml
-cp config/git/.gitconfig ~/.gitconfig
-
-echo "Forge bootstrap complete."
+echo "⚒️ Forge bootstrap complete."
