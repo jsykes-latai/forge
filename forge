@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+VERSION="0.1.0"
+
+show_help() {
+    cat <<EOF
+
+⚒ Forge $VERSION
+
+Build your development environment.
+
+Usage:
+
+    forge build <profile>
+
+Commands:
+
+    build       Build a Forge environment
+    version     Show Forge version
+    help        Show this message
+
+EOF
+}
+
+build() {
+    PROFILE="${1:-}"
+
+    if [[ -z "$PROFILE" ]]; then
+        echo "Error: profile required"
+        exit 1
+    fi
+
+    echo
+    echo "⚒ Forge"
+    echo
+    echo "Building profile: $PROFILE"
+    echo
+}
+
+case "${1:-help}" in
+
+    build)
+        build "$2"
+        ;;
+
+    version)
+        echo "Forge $VERSION"
+        ;;
+
+    help)
+        show_help
+        ;;
+
+    *)
+        echo "Unknown command: $1"
+        show_help
+        exit 1
+        ;;
+
+esac
