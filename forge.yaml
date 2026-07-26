@@ -1,0 +1,27 @@
+name: forge
+version: 0.1.0
+
+system:
+  distro: arch
+  desktop: kde-plasma
+
+shell:
+  default: zsh
+  prompt: starship
+
+tools:
+  terminal:
+    - zsh
+    - starship
+    - eza
+    - bat
+    - ripgrep
+    - fd
+    - fzf
+    - zoxide
+    - btop
+
+development:
+  git: true
+  github_cli: true
+  ssh: true
