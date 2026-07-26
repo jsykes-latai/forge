@@ -2,14 +2,12 @@
 
 set -euo pipefail
 
-# FORGE_DIR="/usr/local/share/forge"
-
 FORGE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-source "$FORGE_DIR/engine/runner.sh"
-
-VERSION="0.2.0"
+VERSION="0.1.1"
 export VERSION
+
+source "$FORGE_DIR/engine/runner.sh"
 
 show_help() {
     cat <<EOF
@@ -32,14 +30,19 @@ EOF
 }
 
 build() {
-    PROFILE="${1:-}"
 
-    if [[ -z "$PROFILE" ]]; then
+    local profile="${1:-}"
+
+    if [[ -z "$profile" ]]; then
         echo "Error: profile required"
-        exit 1
+        return 1
     fi
 
-    build_profile "$PROFILE"
+    forge_execute_profile "$profile" || {
+        echo
+        echo "Forge failed."
+        return 1
+    }
 
 }
 
