@@ -6,7 +6,7 @@ load_profile() {
 
     if [[ ! -f "$PROFILE_FILE" ]]; then
         forge_error "Profile not found: $PROFILE_NAME"
-        return 1
+        return "$FORGE_PROFILE_NOT_FOUND"
     fi
 
 

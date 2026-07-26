@@ -28,7 +28,7 @@ forge_find_capability() {
     local capability="$1"
     local capability_dir="$FORGE_ROOT/capabilities/$capability"
 
-    [[ -d "$capability_dir" ]] || return 1
+    [[ -d "$capability_dir" ]] || return "$FORGE_CAPABILITY_NOT_FOUND"
 
     echo "$capability_dir"
 }
@@ -51,7 +51,7 @@ forge_validate_capability() {
     for file in "${required_files[@]}"; do
         if [[ ! -f "$capability_dir/$file" ]]; then
             forge_error "Missing $file"
-            return 1
+            return "$FORGE_CAPABILITY_INVALID"
         fi
     done
 }
@@ -67,7 +67,7 @@ forge_validate_capability_interface() {
 
         if ! declare -F "$function" >/dev/null; then
             forge_error "Missing required function: $function"
-            return 1
+            return "$FORGE_CAPABILITY_INVALID"
         fi
 
     done
@@ -77,7 +77,7 @@ forge_validate_capability_interface() {
 
         if [[ -z "${!variable:-}" ]]; then
             forge_error "Missing required variable: $variable"
-            return 1
+            return "$FORGE_CAPABILITY_INVALID"
         fi
 
     done
@@ -97,27 +97,27 @@ forge_load_capability() {
 
     capability_dir="$(forge_find_capability "$capability")" || {
         forge_error "Capability not found: $capability"
-        return 1
+        return "$FORGE_CAPABILITY_NOT_FOUND"
     }
 
-    forge_validate_capability "$capability_dir" || return 1
+    forge_validate_capability "$capability_dir" || return $?
 
     source "$capability_dir/capability.sh" || {
         forge_error "Failed to load capability.sh"
-        return 1
+        return "$FORGE_CAPABILITY_NOT_FOUND"
     }
 
     source "$capability_dir/install.sh" || {
         forge_error "Failed to load install.sh"
-        return 1
+        return "$FORGE_CAPABILITY_NOT_FOUND"
     }
 
     source "$capability_dir/verify.sh" || {
         forge_error "Failed to load verify.sh"
-        return 1
+        return "$FORGE_CAPABILITY_NOT_FOUND"
     }
 
-    forge_validate_capability_interface || return 1
+    forge_validate_capability_interface || return $?
 }
 
 
@@ -129,22 +129,18 @@ forge_execute_capability() {
 
     local capability="$1"
 
-    forge_load_capability "$capability" || return 1
+    (
+        forge_load_capability "$capability" || exit $?
 
-    forge_step "$CAPABILITY_NAME"
-    echo
+        forge_step "$CAPABILITY_NAME"
+        echo
 
-    forge_check "Preparing..." capability_install || {
-        forge_error "Preparation failed"
-        return 1
-    }
+        forge_check "Preparing..." capability_install || exit $FORGE_INSTALL_FAILED
 
-    forge_check "Confirming..." capability_verify || {
-        forge_error "Verification failed"
-        return 1
-    }
+        forge_check "Confirming..." capability_verify || exit $FORGE_VERIFY_FAILED
 
-    echo
-    forge_success "Ready"
+        echo
+        forge_success "Ready"
+    )
 
 }

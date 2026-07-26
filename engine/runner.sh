@@ -5,6 +5,7 @@
 ENGINE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 FORGE_ROOT="$(dirname "$ENGINE_DIR")"
 
+source "$ENGINE_DIR/status.sh"
 source "$ENGINE_DIR/ui.sh"
 source "$ENGINE_DIR/profile.sh"
 source "$ENGINE_DIR/capability.sh"
@@ -18,7 +19,7 @@ forge_execute_profile() {
 
     forge_phase "Loading profile"
 
-    load_profile "$PROFILE" || return 1
+    load_profile "$profile" || return $?
 
     forge_success "Profile loaded: $PROFILE"
 
@@ -32,7 +33,7 @@ forge_execute_profile() {
 
     for capability in "${CAPABILITIES[@]}"; do
 
-        forge_execute_capability "$capability" || return 1
+        forge_execute_capability "$capability" || return $?
         
     done
 

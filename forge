@@ -35,13 +35,16 @@ build() {
 
     if [[ -z "$profile" ]]; then
         echo "Error: profile required"
-        return 1
+        return "$FORGE_ERROR"
     fi
 
     forge_execute_profile "$profile" || {
+        local status=$?
+
         echo
-        echo "Forge failed."
-        return 1
+        echo "Forge failed (status: $status)."
+
+        return "$status"
     }
 
 }
@@ -50,6 +53,7 @@ case "${1:-help}" in
 
     build)
         build "$2"
+        exit $?
         ;;
 
     version)

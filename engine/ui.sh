@@ -42,19 +42,21 @@ forge_action() {
 }
 
 forge_check() {
-
     local message="$1"
     shift
 
     forge_action "$message"
 
-    if "$@"; then
+    "$@"
+    local status=$?
+
+    if (( status == 0 )); then
         echo "✓"
-        return 0
     else
         echo "✗"
-        return 1
     fi
+
+    return "$status"
 }
 
 forge_complete() {
