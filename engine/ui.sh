@@ -33,6 +33,26 @@ forge_error() {
     echo
 }
 
+forge_action() {
+    printf "          %-20s " "$1"
+}
+
+forge_check() {
+
+    local message="$1"
+    shift
+
+    forge_action "$message"
+
+    if "$@"; then
+        echo "✓"
+        return 0
+    else
+        echo "✗"
+        return 1
+    fi
+}
+
 forge_complete() {
     echo
     echo "━━━━━━━━━━━━━━━━━━━━━━━━"
