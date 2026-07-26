@@ -1,0 +1,24 @@
+[user]
+	name = jsykes-latai
+	email = echoskill1@gmail.com
+[init]
+	defaultBranch = main
+[core]
+	editor = nvim
+	autocrlf = input
+[pull]
+	rebase = true
+[fetch]
+	prune = true
+[color]
+	ui = auto
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	cm = commit
+	lg = log --oneline --graph --decorate --all
+[column]
+	ui = auto
+[url "git@github.com:"]
+	insteadOf = https://github.com/
