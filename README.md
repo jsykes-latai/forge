@@ -30,12 +30,6 @@ Forge exists to reduce the distance between an idea and working software.
 - Modern CLI tooling
 - Git/GitHub integration
 
-## Bootstrap
-
-```bash
-./bootstrap.sh
-
-
 ## Guiding Principles
 
 ### What should Forge optimize for?
