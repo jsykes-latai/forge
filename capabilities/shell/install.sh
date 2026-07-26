@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-install() {
+capability_install() {
 
     echo "      Installing shell capability..."
 

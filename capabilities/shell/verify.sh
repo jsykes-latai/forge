@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-verify() {
+capability_verify() {
 
     echo "      Verifying shell capability..."
 

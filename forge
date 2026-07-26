@@ -2,7 +2,9 @@
 
 set -euo pipefail
 
-FORGE_DIR="/usr/local/share/forge"
+# FORGE_DIR="/usr/local/share/forge"
+
+FORGE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
 source "$FORGE_DIR/engine/runner.sh"
 

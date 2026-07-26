@@ -1,2 +1,2 @@
-NAME="shell"
-DESCRIPTION="Developer shell environment"
+CAPABILITY_ID="shell"
+CAPABILITY_NAME="Shell environment"

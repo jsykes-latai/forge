@@ -3,50 +3,35 @@
 #!/usr/bin/env bash
 
 ENGINE_DIR="$(dirname "${BASH_SOURCE[0]}")"
+FORGE_ROOT="$(dirname "$ENGINE_DIR")"
 
+source "$ENGINE_DIR/ui.sh"
 source "$ENGINE_DIR/logger.sh"
 source "$ENGINE_DIR/profile.sh"
+source "$ENGINE_DIR/capability.sh"
 
 
 build_profile() {
 
     PROFILE="$1"
 
-    echo
-    echo "⚒ Forge"
-    echo
-    log_info "Loading profile: $PROFILE"
+    forge_header "$PROFILE"
+
+    forge_phase "Loading profile"
 
     load_profile "$PROFILE"
 
-    echo
-
-    log_success "Profile loaded"
-    log_info "Building capabilities:"
+    forge_success "Profile loaded: $PROFILE"
+    
+    forge_phase "Building capabilities:"
 
     for capability in "${CAPABILITIES[@]}"; do
 
-        echo
-        echo "  [$capability]"
-
-        CAPABILITY_DIR="$(dirname "${BASH_SOURCE[0]}")/../capabilities/$capability"
-
-        source "$CAPABILITY_DIR/capability.sh"
-        source "$CAPABILITY_DIR/install.sh"
-        source "$CAPABILITY_DIR/verify.sh"
-
-        install
-
-        if verify; then
-            log_success "$capability ready"
-        else
-            log_error "$capability failed verification"
-            exit 1
-        fi
-
+        execute_capability "$capability" || exit 1
+        
     done
 
     echo
-    log_success "Build complete"
+    forge_complete
 
 }
