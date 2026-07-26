@@ -2,7 +2,11 @@
 
 set -euo pipefail
 
-VERSION="0.1.0"
+FORGE_DIR="/usr/local/share/forge"
+
+source "$FORGE_DIR/engine/runner.sh"
+
+VERSION="0.2.0"
 
 show_help() {
     cat <<EOF
@@ -32,11 +36,8 @@ build() {
         exit 1
     fi
 
-    echo
-    echo "⚒ Forge"
-    echo
-    echo "Building profile: $PROFILE"
-    echo
+    build_profile "$PROFILE"
+
 }
 
 case "${1:-help}" in

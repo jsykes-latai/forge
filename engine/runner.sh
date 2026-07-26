@@ -1,13 +1,34 @@
 # Coordinates everything. Read Profile -> For Each module (Execute Module) -> Done
 
-main() {
+#!/usr/bin/env bash
 
-    log_info "Starting Forge..."
+ENGINE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-    load_profile
+source "$ENGINE_DIR/logger.sh"
+source "$ENGINE_DIR/profile.sh"
 
-    run_modules
 
-    log_success "Forge complete."
+build_profile() {
+
+    PROFILE="$1"
+
+    echo
+    echo "⚒ Forge"
+    echo
+    log_info "Loading profile: $PROFILE"
+
+    load_profile "$PROFILE"
+
+    echo
+
+    log_success "Profile loaded"
+    log_info "Capabilities detected:"
+
+    for capability in "${CAPABILITIES[@]}"; do
+        echo "      - $capability"
+    done
+
+    echo
+    log_success "Build complete"
 
 }
