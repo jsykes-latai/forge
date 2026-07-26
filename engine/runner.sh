@@ -22,6 +22,12 @@ build_profile() {
     load_profile "$PROFILE"
 
     forge_success "Profile loaded: $PROFILE"
+
+    forge_phase "Capabilities detected"
+
+    for capability in "${CAPABILITIES[@]}"; do
+        forge_step "$capability"
+    done
     
     forge_phase "Building capabilities:"
 

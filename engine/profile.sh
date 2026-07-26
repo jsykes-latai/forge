@@ -1,19 +1,24 @@
-# Reads a profile. Returns a list of modules. Nothing else.
-
-#!/usr/bin/env bash
-
-PROFILE_DIR="$(dirname "${BASH_SOURCE[0]}")/../profiles"
-
 load_profile() {
 
-    PROFILE="$1"
+    PROFILE_NAME="$1"
 
-    PROFILE_FILE="$PROFILE_DIR/$PROFILE.conf"
+    PROFILE_FILE="$FORGE_ROOT/profiles/$PROFILE_NAME.yaml"
 
     if [[ ! -f "$PROFILE_FILE" ]]; then
-        log_error "Profile '$PROFILE' not found"
-        exit 1
+        forge_error "Profile not found: $PROFILE_NAME"
+        return 1
     fi
 
-    source "$PROFILE_FILE"
+
+    CAPABILITIES=()
+
+
+    while read -r line; do
+
+        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*(.*)$ ]]; then
+            CAPABILITIES+=("${BASH_REMATCH[1]}")
+        fi
+
+    done < "$PROFILE_FILE"
+
 }
