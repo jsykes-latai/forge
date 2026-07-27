@@ -42,19 +42,46 @@ forge_action() {
 }
 
 forge_check() {
-    local message="$1"
-    shift
+    local action_message="$1"
+    local success_message="$2"
+    local failure_message="$3"
+    local output_file
+    local status
 
-    forge_action "$message"
+    shift 3
 
-    "$@"
-    local status=$?
+    output_file="$(mktemp)"
+
+    echo "          $action_message"
+
+    if "$@" >"$output_file" 2>&1; then
+        status=0
+    else
+        status=$?
+    fi
+
+    forge_log_command "$action_message" "$status" "$output_file"
 
     if (( status == 0 )); then
-        echo "✓"
+        printf "          %-20s ✓\n" "$success_message"
     else
-        echo "✗"
+        printf "          %-20s ✗\n" "$failure_message"
+        echo
+        echo "          Command output:"
+
+        if [[ -s "$output_file" ]]; then
+            tail -n 12 "$output_file" |
+                sed 's/^/              /'
+        else
+            echo "              No diagnostic output was produced."
+        fi
+
+        echo
+        echo "          Full log:"
+        echo "              $FORGE_LOG_FILE"
     fi
+
+    rm -f "$output_file"
 
     return "$status"
 }

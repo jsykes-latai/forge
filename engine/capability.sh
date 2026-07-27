@@ -135,10 +135,20 @@ forge_execute_capability() {
         forge_step "$CAPABILITY_NAME"
         echo
 
-        forge_check "Preparing..." capability_install || exit $FORGE_INSTALL_FAILED
+        forge_check \
+            "Installing..." \
+            "Tools installed" \
+            "Installation failed" \
+            capability_install ||
+            exit "$FORGE_INSTALL_FAILED"
 
-        forge_check "Confirming..." capability_verify || exit $FORGE_VERIFY_FAILED
-
+        forge_check \
+            "Verifying..." \
+            "Tools verified" \
+            "Verification failed" \
+            capability_verify ||
+            exit "$FORGE_VERIFY_FAILED"
+        
         echo
         forge_success "Ready"
     )
