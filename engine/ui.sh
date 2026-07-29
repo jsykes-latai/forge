@@ -22,7 +22,7 @@ forge_info() {
 }
 
 forge_success() {
-    echo "  ✓ $1"
+    echo "      ✓ $1"
 }
 
 forge_warning() {

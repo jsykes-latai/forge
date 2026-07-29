@@ -132,7 +132,7 @@ forge_execute_capability() {
     (
         forge_load_capability "$capability" || exit $?
 
-        forge_step "$CAPABILITY_NAME"
+        forge_step "$CAPABILITY_NAME..."
         echo
 
         forge_check \
@@ -150,7 +150,7 @@ forge_execute_capability() {
             exit "$FORGE_VERIFY_FAILED"
         
         echo
-        forge_success "Ready"
+        forge_success "$CAPABILITY_NAME Ready"
     )
 
 }

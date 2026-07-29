@@ -18,21 +18,28 @@ forge_execute_profile() {
 
     forge_header "$PROFILE"
 
-    forge_phase "Loading profile"
+    forge_phase "Loading profile..."
 
     load_profile "$PROFILE" || return $?
 
     forge_success "Profile loaded: $PROFILE"
 
-    forge_phase "Capabilities detected"
+    forge_phase "Capabilities detected..."
 
     for capability in "${CAPABILITIES[@]}"; do
         forge_step "$capability"
     done
 
-    forge_phase "Building capabilities:"
+    forge_phase "Building capabilities..."
+
+    first=true
 
     for capability in "${CAPABILITIES[@]}"; do
+        if ! $first; then
+            echo
+        fi
+        first=false
+        
         forge_execute_capability "$capability" || return $?
     done
 
