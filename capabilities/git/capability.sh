@@ -1,6 +1,7 @@
 CAPABILITY_ID="git"
 CAPABILITY_NAME="Git"
 CAPABILITY_DESCRIPTION="Version control system installed and ready for configuration"
+CAPABILITY_DEPENDENCIES=()
 
 GIT_CAPABILITY_DIR="$(
     cd -- "$(dirname -- "${BASH_SOURCE[0]}")"

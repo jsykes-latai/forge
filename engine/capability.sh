@@ -15,7 +15,9 @@ FORGE_REQUIRED_CAPABILITY_FUNCTIONS=(
 )
 
 FORGE_REQUIRED_CAPABILITY_VARIABLES=(
+    CAPABILITY_ID
     CAPABILITY_NAME
+    CAPABILITY_DESCRIPTION
 )
 
 
@@ -62,6 +64,14 @@ forge_validate_capability() {
 #########################################
 
 forge_validate_capability_interface() {
+    local expected_capability="$1"
+
+    if [[ "$CAPABILITY_ID" != "$expected_capability" ]]; then
+        forge_error "Capability ID mismatch"
+        forge_error "Expected: $expected_capability"
+        forge_error "Declared: $CAPABILITY_ID"
+        return "$FORGE_CAPABILITY_INVALID"
+    fi
 
     for function in "${FORGE_REQUIRED_CAPABILITY_FUNCTIONS[@]}"; do
 
@@ -72,15 +82,15 @@ forge_validate_capability_interface() {
 
     done
 
+    if ! declare -p CAPABILITY_DEPENDENCIES &>/dev/null; then
+        forge_error "Missing required variable: CAPABILITY_DEPENDENCIES"
+        return "$FORGE_CAPABILITY_INVALID"
+    fi
 
-    for variable in "${FORGE_REQUIRED_CAPABILITY_VARIABLES[@]}"; do
-
-        if [[ -z "${!variable:-}" ]]; then
-            forge_error "Missing required variable: $variable"
-            return "$FORGE_CAPABILITY_INVALID"
-        fi
-
-    done
+    if [[ "$(declare -p CAPABILITY_DEPENDENCIES)" != "declare -a"* ]]; then
+        forge_error "CAPABILITY_DEPENDENCIES must be an indexed array"
+        return "$FORGE_CAPABILITY_INVALID"
+    fi
 
 }
 
@@ -102,22 +112,20 @@ forge_load_capability() {
 
     forge_validate_capability "$capability_dir" || return $?
 
+    unset CAPABILITY_ID
+    unset CAPABILITY_NAME
+    unset CAPABILITY_DESCRIPTION
+    unset CAPABILITY_DEPENDENCIES
+
+    unset -f capability_install 2>/dev/null || true
+    unset -f capability_verify 2>/dev/null || true
+
     source "$capability_dir/capability.sh" || {
         forge_error "Failed to load capability.sh"
         return "$FORGE_CAPABILITY_NOT_FOUND"
     }
 
-    source "$capability_dir/install.sh" || {
-        forge_error "Failed to load install.sh"
-        return "$FORGE_CAPABILITY_NOT_FOUND"
-    }
-
-    source "$capability_dir/verify.sh" || {
-        forge_error "Failed to load verify.sh"
-        return "$FORGE_CAPABILITY_NOT_FOUND"
-    }
-
-    forge_validate_capability_interface || return $?
+    forge_validate_capability_interface "$capability" || return $?
 }
 
 

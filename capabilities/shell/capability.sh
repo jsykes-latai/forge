@@ -1,6 +1,7 @@
 CAPABILITY_ID="shell"
 CAPABILITY_NAME="Shell environment"
 CAPABILITY_DESCRIPTION="Terminal and shell tooling"
+CAPABILITY_DEPENDENCIES=()
 
 SHELL_CAPABILITY_DIR="$(
     cd -- "$(dirname -- "${BASH_SOURCE[0]}")"

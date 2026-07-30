@@ -86,6 +86,17 @@ forge_check() {
     return "$status"
 }
 
+forge_capabilities_resolved() {
+    echo
+    echo "  Capabilities ready to build..."
+
+    local capability
+
+    for capability in "$@"; do
+        forge_success "$capability"
+    done
+}
+
 forge_complete() {
     echo
     echo "━━━━━━━━━━━━━━━━━━━━━━━━"

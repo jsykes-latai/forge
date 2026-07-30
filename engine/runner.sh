@@ -10,6 +10,7 @@ source "$ENGINE_DIR/logger.sh"
 source "$ENGINE_DIR/ui.sh"
 source "$ENGINE_DIR/profile.sh"
 source "$ENGINE_DIR/capability.sh"
+source "$ENGINE_DIR/resolver.sh"
 
 forge_execute_profile() {
     PROFILE="$1"
@@ -23,18 +24,28 @@ forge_execute_profile() {
     load_profile "$PROFILE" || return $?
 
     forge_success "Profile loaded: $PROFILE"
-
+    
     forge_phase "Capabilities detected..."
 
     for capability in "${CAPABILITIES[@]}"; do
         forge_step "$capability"
     done
 
+    forge_phase "Resolving dependencies..."
+
+    forge_resolve_capabilities "${CAPABILITIES[@]}" || return $?
+
+    forge_success "Dependencies resolved"
+
+    # declare -p "${FORGE_RESOLVED_CAPABILITIES[@]}"
+
+    forge_capabilities_resolved "${FORGE_RESOLVED_CAPABILITIES[@]}"
+ 
     forge_phase "Building capabilities..."
 
     first=true
 
-    for capability in "${CAPABILITIES[@]}"; do
+    for capability in "${FORGE_RESOLVED_CAPABILITIES[@]}"; do
         if ! $first; then
             echo
         fi

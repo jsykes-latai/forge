@@ -4,7 +4,7 @@ set -euo pipefail
 
 FORGE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-VERSION="0.3.0"
+VERSION="0.4.0"
 export VERSION
 
 source "$FORGE_DIR/engine/runner.sh"
